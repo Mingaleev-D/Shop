@@ -1,5 +1,6 @@
 package studev
 
+import java.io.File
 import kotlin.system.exitProcess
 
 val itemProductsNames = mutableListOf<String>()
@@ -14,11 +15,11 @@ var customerNames = mutableListOf<String>()
 val productList = mutableListOf<Product>()
 
 
-class Product{
+class Product {
    var name = ""
    var price = 0
 
-   constructor(){
+   constructor() {
 
    }
 }
@@ -44,18 +45,18 @@ fun createProducts() {
 
    } while (answer != "no")
 }
-fun createSingleProduct(){
+
+fun createSingleProduct() {
 
    val product = Product()
 
    val productName = askForStringFromUser("Enter product name: ")
-  // productNames.add(productName)
    product.name = productName
 
-
    val productPrice = askForNumberFromUser("Enter product price: ")
-   //productPrices.add(productPrice)
    product.price = productPrice
+
+   productList.add(product)
 }
 
 fun askForStringFromUser(message: String): String {
@@ -154,46 +155,89 @@ fun showMainMenu() {
       "0" -> changeShopName()
       "1" -> createSingleProduct()
       "2" -> createNewCustomer()
+      "6" -> printProductList()
       "7" -> printingTheCustomerList()
       "exit" -> exitProcess(0)
       else -> println("pls enter number 0 or 8 or exit")
    }
 }
-fun printingTheCustomerList(){
-   if(customerNames.size <1){
+
+fun printProductList() {
+   if (productList.size < 1) {
+      println("There is no product")
+      return
+   }
+   for (p in productList)
+      println("Product > ${p.name}, ${p.price}")
+
+   println("------------------------------------")
+}
+
+fun printingTheCustomerList() {
+   if (customerNames.size < 1) {
       println("There is no customer ...")
       return
    }
 
    println("List of Customer")
 
-   for(cn in customerNames){
+   for (cn in customerNames) {
       println("customer: $cn")
    }
    println("------------------------------------")
 }
 
-fun storeToPersistence(){
+fun storeToPersistence() {
+   val storeFile = File("C:/Users/admin/IdeaProjects/Shop/shop_test.txt")
+   var data = ""
 
+   for (product in productList) {
+      data += "${product.name}|${product.price}"
+      data += "+"
+   }
+   storeFile.writeText(data)
 }
 
 fun main() {
-   while (true){
+
+   restoreDataFromPersistence()
+
+   while (true) {
       showMainMenu()
       storeToPersistence()
+
+
    }
+}
 
+fun restoreDataFromPersistence() {
+   val storeFile = File("C:/Users/admin/IdeaProjects/Shop/shop_test.txt")
+   val contentOfFile = storeFile.readText()
 
-//   askShopName()
-//
-//   createProducts()
-//
-//   askCustomerName()
-//
-//   askTheItemsOfShoppingCart()
-//
-//   printTheFinalReceipt()
+   var productName = ""
+   var productPrice = ""
+   var readingName = true
 
+   for (ch in contentOfFile) {
+      if (ch == '|') {
+         readingName = false
+      } else if (ch == '+') {
+         readingName = true
+         val product = Product()
+         product.name = productName
+         product.price = productPrice.toInt()
+
+         productList.add(product)
+
+         productName = ""
+         productPrice = ""
+      } else {
+         if (readingName)
+            productName += ch
+         else
+            productPrice += ch
+      }
+   }
 }
 
 
