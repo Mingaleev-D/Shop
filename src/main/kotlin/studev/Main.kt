@@ -9,6 +9,19 @@ val productNames = mutableListOf<String>()
 val productPrices = mutableListOf<Int>()
 
 var shopName = ""
+var customerNames = mutableListOf<String>()
+
+val productList = mutableListOf<Product>()
+
+
+class Product{
+   var name = ""
+   var price = 0
+
+   constructor(){
+
+   }
+}
 
 fun askUntilYesOrNo(message: String): String {
    println("$message yes/no")
@@ -32,12 +45,17 @@ fun createProducts() {
    } while (answer != "no")
 }
 fun createSingleProduct(){
+
+   val product = Product()
+
    val productName = askForStringFromUser("Enter product name: ")
-   productNames.add(productName)
+  // productNames.add(productName)
+   product.name = productName
 
 
    val productPrice = askForNumberFromUser("Enter product price: ")
-   productPrices.add(productPrice)
+   //productPrices.add(productPrice)
+   product.price = productPrice
 }
 
 fun askForStringFromUser(message: String): String {
@@ -103,9 +121,9 @@ fun getPriceOfProduct(productName: String): Int {
    return 0
 }
 
-fun askCustomerName() {
-   println("Enter customer name: ")
-   val customerName = readLine()!!
+fun createNewCustomer() {
+   val customerName = askForStringFromUser("Enter customer name")
+   customerNames.add(customerName)
 }
 
 fun changeShopName() {
@@ -135,14 +153,36 @@ fun showMainMenu() {
    when (answer) {
       "0" -> changeShopName()
       "1" -> createSingleProduct()
+      "2" -> createNewCustomer()
+      "7" -> printingTheCustomerList()
       "exit" -> exitProcess(0)
       else -> println("pls enter number 0 or 8 or exit")
    }
 }
+fun printingTheCustomerList(){
+   if(customerNames.size <1){
+      println("There is no customer ...")
+      return
+   }
+
+   println("List of Customer")
+
+   for(cn in customerNames){
+      println("customer: $cn")
+   }
+   println("------------------------------------")
+}
+
+fun storeToPersistence(){
+
+}
 
 fun main() {
-   while (true)
-   showMainMenu()
+   while (true){
+      showMainMenu()
+      storeToPersistence()
+   }
+
 
 //   askShopName()
 //
