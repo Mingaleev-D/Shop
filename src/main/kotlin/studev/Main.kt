@@ -1,10 +1,14 @@
 package studev
 
+import kotlin.system.exitProcess
+
 val itemProductsNames = mutableListOf<String>()
 val itemAmounts = mutableListOf<Int>()
 
 val productNames = mutableListOf<String>()
 val productPrices = mutableListOf<Int>()
+
+var shopName = ""
 
 fun askUntilYesOrNo(message: String): String {
    println("$message yes/no")
@@ -21,24 +25,29 @@ fun askUntilYesOrNo(message: String): String {
 fun createProducts() {
    do {
 
-      val productName = askForStringFromUser("Enter product name: ")
-      productNames.add(productName)
-
-
-      val productPrice = askForNumberFromUser("Enter product price: ")
-      productPrices.add(productPrice)
+      createSingleProduct()
 
       val answer = askUntilYesOrNo("do you want do define another product? ")
 
    } while (answer != "no")
 }
-fun askForStringFromUser(message:String):String{
+fun createSingleProduct(){
+   val productName = askForStringFromUser("Enter product name: ")
+   productNames.add(productName)
+
+
+   val productPrice = askForNumberFromUser("Enter product price: ")
+   productPrices.add(productPrice)
+}
+
+fun askForStringFromUser(message: String): String {
    println(message)
    return readLine()!!
 }
-fun askForNumberFromUser(message:String):Int{
-val string = askForStringFromUser(message)
-  return string.toInt()
+
+fun askForNumberFromUser(message: String): Int {
+   val string = askForStringFromUser(message)
+   return string.toInt()
 }
 
 fun askTheItemsOfShoppingCart() {
@@ -71,10 +80,12 @@ fun printTheFinalReceipt() {
 
       indexOfItemProductNames++
 
-      println("item $itemProductsNames is " +
-          "$itemProductAmountAtThisIndex of " +
-          "$itemProductNameAtThisIndex -> $itemProductAmountAtThisIndex * $itemProductUnitPrice = " +
-          "$totalPriceOfThisItem")
+      println(
+         "item $itemProductsNames is " +
+             "$itemProductAmountAtThisIndex of " +
+             "$itemProductNameAtThisIndex -> $itemProductAmountAtThisIndex * $itemProductUnitPrice = " +
+             "$totalPriceOfThisItem"
+      )
 
    } while (indexOfItemProductNames < itemProductsNames.size)
    println("Total price = $totalPriceOfReceipt")
@@ -82,12 +93,12 @@ fun printTheFinalReceipt() {
 
 fun getPriceOfProduct(productName: String): Int {
    var index = 0
-   do{
+   do {
       if (productNames[index] == productName)
          return productPrices[index]
 
       index++
-   }while (index < productNames.size)
+   } while (index < productNames.size)
 
    return 0
 }
@@ -97,22 +108,51 @@ fun askCustomerName() {
    val customerName = readLine()!!
 }
 
-fun askShopName() {
-   println("Enter shop name: ")
-   val shopName = readLine()
+fun changeShopName() {
+   shopName = askForStringFromUser("Enter shop name: ")
+}
+
+fun showMainMenu() {
+   val menu = """
+   Main menu.
+      
+   0-Change Shop Name
+   1-Create New Product
+   2-Create New Customer
+   3-Creating Shopping cart
+   4-Modify Product
+   5-Modify Customer
+   6-Print Product List
+   7-Print Customer List
+   8-Print Product Purchases List
+      
+   Please number(0-8) or exit:
+      
+   """.trimIndent()
+
+   val answer = askForStringFromUser(menu)
+
+   when (answer) {
+      "0" -> changeShopName()
+      "1" -> createSingleProduct()
+      "exit" -> exitProcess(0)
+      else -> println("pls enter number 0 or 8 or exit")
+   }
 }
 
 fun main() {
+   while (true)
+   showMainMenu()
 
-   askShopName()
-
-   createProducts()
-
-   askCustomerName()
-
-   askTheItemsOfShoppingCart()
-
-   printTheFinalReceipt()
+//   askShopName()
+//
+//   createProducts()
+//
+//   askCustomerName()
+//
+//   askTheItemsOfShoppingCart()
+//
+//   printTheFinalReceipt()
 
 }
 
