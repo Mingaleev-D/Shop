@@ -1,10 +1,13 @@
 package studev
 
 val itemProductsNames = mutableListOf<String>()
-val itemAmounts = mutableListOf<String>()
+val itemAmounts = mutableListOf<Int>()
+
+val productNames = mutableListOf<String>()
+val productPrices = mutableListOf<Int>()
 
 fun askUntilYesOrNo(message: String): String {
-   println(message)
+   println("$message yes/no")
    var answer = readLine()!!
 
    while (answer != "yes" || answer != "no") {
@@ -16,50 +19,77 @@ fun askUntilYesOrNo(message: String): String {
 }
 
 fun createProducts() {
-   val productNames = mutableListOf<String>()
-   val productPrices = mutableListOf<String>()
-
    do {
-      println("Enter product name: ")
-      val productName = readLine()!!
+
+      val productName = askForStringFromUser("Enter product name: ")
       productNames.add(productName)
 
-      println("Enter product price: ")
-      val productPrice = readLine()!!
+
+      val productPrice = askForNumberFromUser("Enter product price: ")
       productPrices.add(productPrice)
 
-      val answer = askUntilYesOrNo("do you want do define another product? yes/no")
+      val answer = askUntilYesOrNo("do you want do define another product? ")
 
    } while (answer != "no")
+}
+fun askForStringFromUser(message:String):String{
+   println(message)
+   return readLine()!!
+}
+fun askForNumberFromUser(message:String):Int{
+val string = askForStringFromUser(message)
+  return string.toInt()
 }
 
 fun askTheItemsOfShoppingCart() {
    do {
-      println("Enter item product: ")
-      val itemProductName = readLine()!!
+
+      val itemProductName = askForStringFromUser("Enter item product: ")
       itemProductsNames.add(itemProductName)
 
-      println("Enter amount of item: ")
-      val itemAmount = readLine()!!
+
+      val itemAmount = askForNumberFromUser("Enter amount of item: ")
       itemAmounts.add(itemAmount)
 
-      val answer = askUntilYesOrNo(" Is there any item? yes/no")
+      val answer = askUntilYesOrNo(" Is there any item? ")
 
    } while (answer != "no")
 }
 
 fun printTheFinalReceipt() {
    var indexOfItemProductNames = 0
+   var totalPriceOfReceipt = 0
 
    do {
-      val thisItemProductName = itemProductsNames[indexOfItemProductNames]
-      val thisItemProductAmount = itemAmounts[indexOfItemProductNames]
+      val itemProductNameAtThisIndex = itemProductsNames[indexOfItemProductNames]
+      val itemProductAmountAtThisIndex = itemAmounts[indexOfItemProductNames]
+
+      val itemProductUnitPrice = getPriceOfProduct(itemProductNameAtThisIndex)
+      val totalPriceOfThisItem = itemProductAmountAtThisIndex * itemProductUnitPrice
+
+      totalPriceOfReceipt = totalPriceOfReceipt + totalPriceOfThisItem
 
       indexOfItemProductNames++
 
-      println("item $itemProductsNames is $thisItemProductAmount of $thisItemProductName")
+      println("item $itemProductsNames is " +
+          "$itemProductAmountAtThisIndex of " +
+          "$itemProductNameAtThisIndex -> $itemProductAmountAtThisIndex * $itemProductUnitPrice = " +
+          "$totalPriceOfThisItem")
 
    } while (indexOfItemProductNames < itemProductsNames.size)
+   println("Total price = $totalPriceOfReceipt")
+}
+
+fun getPriceOfProduct(productName: String): Int {
+   var index = 0
+   do{
+      if (productNames[index] == productName)
+         return productPrices[index]
+
+      index++
+   }while (index < productNames.size)
+
+   return 0
 }
 
 fun askCustomerName() {
